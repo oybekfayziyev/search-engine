@@ -39,9 +39,9 @@ def get_option_by_input(option):
     if option == '2':
         
         text2 = '''
-        O‘zbekiston xalq artisti Dilbar Ikromova olamdan o‘tdi O‘zbek milliy akademik drama teatri aktrisasi, O‘zbekiston xalq artisti Dilbar Ikromova bugun, 25 avgust kuni 73 yoshida vafot etdi
-
-
+        Xonobod 86 davlat ijrochilari keladigan xalqaro milliy estrada  festivali o‘tkazishga hozirlik ko‘rmoqda Andijon viloyatida ichki va tashqi turizmni rivojlantirish maqsadida Xonobod shahrida milliy estrada ijrochiligi bo‘yicha xalqaro festival o‘tkaziladi. Mazkur festivalga dunyoning 86 mamlakatidan milliy 
+estrada xonandalarini taklif etish rejalashtirilgan. Ayni kunlarda Xonobodda tayyorgarlik ishlari olib borilmoqda.
+        
         '''
 
         entity = []

@@ -122,23 +122,23 @@ class TfidVectorizerClass(Analyze):
 		
 		return X_pca
 	
-	def normalize(self, embedding):
+	def normalize(self, data):
 		
-		if len(embedding.shape) > 1:
-			embedding /= np.linalg.norm(embedding, axis=1)[:, np.newaxis]
+		if len(data.shape) > 1:
+			data /= np.linalg.norm(data, axis=1)[:, np.newaxis]
 		else:
-			embedding /= np.linalg.norm(embedding)
+			data /= np.linalg.norm(data)
 		
-		return embedding
+		return data
 	
 	def transform(self, document):
-		embedding, _, _ = self._transform(document)
+		transform_data, _, _ = self._transform(document)
 		 
-		embedding = self.removePC(embedding)
+		transform_data = self.removePC(transform_data)
 		 
-		embedding = self.normalize(embedding)
+		transform_data = self.normalize(transform_data)
 	 
-		return embedding
+		return transform_data
 
 	def find_similarity(self, query, document):
 		 
