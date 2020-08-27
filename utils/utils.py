@@ -28,11 +28,11 @@ def menu():
     3. DELETE POST
     4. SEE ALL POSTS
     5. ADD POST FROM JSON
-    6. DELETE ALL
+    6. DELETE ALL    
     7. EXIT
     '''
 
-def load_data_from_json(filename):
+def load_data(filename = 'database/data.json'):
     title = []
     description = []
 

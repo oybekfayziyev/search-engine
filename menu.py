@@ -2,8 +2,8 @@ from post.add_to_post import AddPost as add_post
 from utils.utils import validate, menu
 from utils.core import remove_words
 import sys
-from search.analyze import (StemmedCountVectorizer, StemmedTfidfCountVectorizer, 
-            eucl_dist, Analyze as analyze_obj,TfidVectorizerClass, WordProcessor as word_obj)
+from search.analyze import ( 
+            Analyze as analyze_obj,TfidVectorizerClass, WordProcessor as word_obj)
 
 def getInput():
 
@@ -38,15 +38,43 @@ def get_option_by_input(option):
 
     if option == '2':
         
-        text = '''"Ushbu Ushbu bo'lsangiz qaror haqida 21 avgust kuni prezidentning Bektemir tumaniga tashrifi vaqtida ham aytilgandi, prezident o‘shanda O‘zbekistonda ishlab chiqarilayotgan avtomobillar tannarxini kamaytirish zarurligini ta'kidlagandi. Qarorga muvofiq, endi davlat xaridlarida yurtimizda tayyorlangan mahsulotlarga ustuvorlik berilib, ishlab chiqarish yanada rag‘batlantirilishi, jumladan, tenderda ikkitadan ko‘p o‘zbekistonlik ishlab chiqaruvchi mavjud bo‘lganda, faqat ularning mahsuloti qatnashishi, bundan buyon budjet hisobidan amalga oshiriladigan barcha xaridlarda mahalliy hokimiyat vakillari bevosita ishtirok etishi aytilgandi.Bu yilgi o‘quv yilini 14 sentabr – dushanba kunidan boshlash taklif sifatida kiritildi. Bu haqda xalq ta'limi vaziri Sherzod Shermatov xabar berdi.Vazirlik 3ta ssenariy bo‘yicha ishlayotgan edi. Ular orasida an'anaviy maktabni ochish, onlayn maktab orqali o‘qitish va aralash (gibrid) ssenariy bor. Vazirning yozishicha, «Telegram» orqali deyarli 1 mln. foydalanuvchi qatnashgan so‘rovnomada 70 foiz ota-ona bola sog‘lig‘idan xavotirda bo‘lib, uyda o‘zi onlayn o‘qitishi mumkinligi, 30 foizi esa pandemiya sharoitida ham farzandini maktabga yuborishini bildirgan.«Shuning uchun, aholini ko‘proq qatlamini rozi qilishni inobatga olib, faqat 3-ssenariy, ya'ni ota-onalarning o‘zlariga tanlash huquqini berish eng optimal variant bo‘lib turibdi.",
-                "Bir tomondan, internetda ba'zi davlatlarda maktablar ochilib, kasallik ko‘payishi natijasida qaytadan yopilgani, bolalar o‘zi kuchli kasallanmasa-da, kattalarga qaraganda kuchliroq virus tashuvchisi bo‘lishi mumkinligi haqida xabarlar tarqalyapti.Ikkinchi tomondan, bu virusdan yaqin orada qutilmasligimizni, vaksina ishlab chiqilgan taqdirda ham uni barcha xavfsizlik sinovlaridan o‘tkazishga va ishlab chiqarib bizga yetib kelishiga ancha vaqt ketishi ham aniq.",
-                "Shunga, ushbu vaqt davrida farzandlarimiz bilim olishdan orqada qolib ketmasliklari zarur», - deydi Sh. Shermatov."'''
-     
+        text2 = '''
+        O‘zbekiston xalq artisti Dilbar Ikromova olamdan o‘tdi O‘zbek milliy akademik drama teatri aktrisasi, O‘zbekiston xalq artisti Dilbar Ikromova bugun, 25 avgust kuni 73 yoshida vafot etdi
+
+
+        '''
+
+        entity = []
+
+        # text = input('Enter text you want to search: ')
         tfi_obj = TfidVectorizerClass()
-        X, vectorizer = tfi_obj._transform(text)
-        print(vectorizer.get_feature_names())
-        print(X.shape)
-        print(X)
+            
+        posts = add_post()
+        title, description = posts.get_title_and_description()
+
+        # make title and description into one string
+        for index, i in enumerate(title):
+            entity.append(' '.join((title[index],description[index])))
+
+        from sklearn.svm import SVC
+        clf = SVC(kernel='linear')
+
+        # find = tfi_obj.find_similarity(text2, entity)    
+        # print('find', find)
+
+        for index, i in enumerate(entity):   
+           
+            find = tfi_obj.find_similarity(text2, i)   
+        
+            print('post id %s, related topics rate  %s: ' %(index+1, find[0]))
+
+            
+            if find[0] > 4:
+                print(i)
+            # print(vectorizer.get_feature_names())
+        # print(X.shape)
+        # print(X)
+        # print('distance',distance)
       
     if option == '3':
         while delete_id is None:
@@ -58,11 +86,14 @@ def get_option_by_input(option):
 
     if option == '4':
         post = add_post()
+        title, description = post.get_title_and_description()
+        print('title', title)
+        print('description', description)
         result = post.select_all_items()
         data = result[0]        
 
         # show = show_as_dataFrame(result)
-        print(result)
+        # print(result)
 
     if option == '5':
         post = add_post()
@@ -86,3 +117,19 @@ def get_option_by_input(option):
         post.delete_all()
         print('All data deleted from table')
 
+    # if option == '7':
+    #     post = add_post()
+
+    #     entity = []
+    #     title, description = post.get_title_and_description()
+    #     # make title and description into one string
+    #     for index, i in enumerate(title):
+    #         entity.append(' '.join((title[index],description[index])))
+        
+    #     for i in entity:
+    #         tfi_obj = TfidVectorizerClass()
+    #         X, Y, vectorizer = tfi_obj._transform(i)
+    #         print('X', X.shape)
+            
+
+    #     return entity

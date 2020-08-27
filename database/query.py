@@ -68,4 +68,5 @@ class DBConnect():
     def __del__(self):
         self.connect.close()
 
+    
 

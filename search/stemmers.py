@@ -8,8 +8,7 @@ class FSMStemmer(object):
     """
 
     events = [
-        ('dir', 'start', 'b'), ('dirda', 'start', 'b'),
-        
+        ('dir', 'start', 'b'), ('dirda', 'start', 'b'),        
         ('langan','start','b'), ('lik','start','b'),
         ('ku', 'start', 'b'), ('mi', 'start', 'b'),
         ('mikan', 'start', 'b'), ('siz', 'start', 'b'),

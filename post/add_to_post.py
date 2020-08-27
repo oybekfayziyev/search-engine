@@ -1,6 +1,6 @@
 from database.query import DBConnect
 import json
-from utils.utils import load_data_from_json
+from utils.utils import load_data
 
 class AddPost(DBConnect):
 
@@ -22,7 +22,7 @@ class AddPost(DBConnect):
         self.description = description
     
     def load_data_from_json(self):
-        title, description = load_data_from_json()
+        title, description = load_data()
         self.set_title(title)
         self.set_description(description)
             
@@ -35,3 +35,15 @@ class AddPost(DBConnect):
     def delete_all(self):
         self.delete_all_posts()
         
+    def get_title_and_description(self):
+        title = []
+        description = []
+        result = self.select_all_items()
+
+        for i in result:
+            # print('i', i)
+            title.append(i[1])
+            description.append(i[2])
+        
+        return title, description
+

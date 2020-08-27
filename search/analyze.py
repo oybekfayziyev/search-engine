@@ -4,6 +4,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import scipy as sp 
 from .stemmers import FSMStemmer, WordProcessor
 import sys
+import numpy as np
 from utils.core import (remove_punctuation, remove_words, 
         remove_urls, to_lowercase, remove_numbers, digit_to_word)
 from .stemmers import FSMStemmer
@@ -100,51 +101,50 @@ class TfidVectorizerClass(Analyze):
 		text = self.stemmer(text)	
 		vectorizer = TfidfVectorizer()		
 		X = vectorizer.fit_transform(text)
-		print(X.shape)
-		return X, vectorizer
+		Y = vectorizer.transform(text)
+		 
+		return X, Y, vectorizer
+	
+	def train_test_data(self, X, Y):
+		from sklearn.model_selection import train_test_split
+		
+		x_train, x_test, y_train, y_test = train_test_split(X, Y[:,0])
+		return x_train, x_test, y_train, y_test
 
-class TrainClassifer():
+	def removePC(self,document):
+		# from sklearn.decomposition import PCA
 
-	pass
+		from sklearn.decomposition import TruncatedSVD
+		
 
+		pca = TruncatedSVD(1)
+		X_pca = pca.fit_transform(document)
+		
+		return X_pca
+	
+	def normalize(self, embedding):
+		
+		if len(embedding.shape) > 1:
+			embedding /= np.linalg.norm(embedding, axis=1)[:, np.newaxis]
+		else:
+			embedding /= np.linalg.norm(embedding)
+		
+		return embedding
+	
+	def transform(self, document):
+		embedding, _, _ = self._transform(document)
+		 
+		embedding = self.removePC(embedding)
+		 
+		embedding = self.normalize(embedding)
+	 
+		return embedding
 
-
-
-class StemmedCountVectorizer(CountVectorizer) :
-	def build_analyser(self) :
-
-		'''this function returns the function ( lambda used to return a function ) that
-		stems each word using the english_stemmer 'english_stemmer.stem(word)' after it has done
-		tokenization.
-		english_stemmer.stem("graphics") returns "graphic" '''
-		analyser = super(StemmedCountVectorizer,self).build_analyser()
-       
-		return lambda document : (FSMStemmer().do_stem(word) for word in analyser(document))
-
-
-
-class StemmedTfidfCountVectorizer(TfidfVectorizer) :
-	def build_analyser(self) :
-
-		'''this function returns the function ( lambda used to return a function ) that
-		stems each word using the english_stemmer 'english_stemmer.stem(word)' after it has done
-		tokenization.Here the tokenization is done after applying Tf-Idf.
-		english_stemmer.stem("graphics") returns "graphic" '''
-		analyser = super(StemmedTfidfCountVectorizer,self).build_analyser()
-		return lambda document : (FSMStemmer().do_stem(word) for word in analyser(document))
-
-
-
-
-def eucl_dist(v1,v2) :
-
-	''' Returns the eucledian distance between two vectors 
-	lialg is linear algebra and norm returns the magnitude of the vector
-	we apply normalization by dividing the vector with its magnitude, 
-	use to array when using norm'''
-
-	v1_normalized = v1/sp.linalg.norm(v1.toarray())
-	v2_normalized = v2/sp.linalg.norm(v2.toarray())
-	delta = v1_normalized - v2_normalized 
-	return sp.linalg.norm(delta.toarray())
+	def find_similarity(self, query, document):
+		 
+		query = self.transform(query).reshape(1,-1)
+	 
+		document = self.transform(document) 
+		
+		return np.dot(query, document[:query.shape[1], :])[0]
 
